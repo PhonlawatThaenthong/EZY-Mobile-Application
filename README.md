@@ -1,4 +1,4 @@
-# ezy_app
+# EZY-Mobile-Application
 
 A new Flutter project.
 
