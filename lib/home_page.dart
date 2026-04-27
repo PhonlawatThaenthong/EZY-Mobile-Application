@@ -127,11 +127,15 @@ class _HomePageState extends State<HomePage>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Semantics(
-            label: 'shopping cart',
+            label: 'ย้อนกลับ',
             button: true,
             child: _TopBarButton(
-              icon: Icons.shopping_cart_outlined,
-              onTap: () {},
+              icon: Icons.arrow_back_ios_new_rounded,
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
             ),
           ),
           GestureDetector(
