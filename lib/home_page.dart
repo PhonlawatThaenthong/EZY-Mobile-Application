@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
+import 'category_products_page.dart';
 
 // ─── Data Model ───────────────────────────────────────────────────────────────
 
@@ -117,8 +118,14 @@ class _HomePageState extends State<HomePage>
                   title: const Text('ออกจากระบบ'),
                   content: const Text('คุณต้องการออกจากระบบหรือไม่?'),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ยกเลิก')),
-                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('ออกจากระบบ')),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('ยกเลิก'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('ออกจากระบบ'),
+                    ),
                   ],
                 ),
               );
@@ -146,7 +153,11 @@ class _HomePageState extends State<HomePage>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.logout_rounded, color: const Color(0xFF3A7CA5), size: 16),
+                  Icon(
+                    Icons.logout_rounded,
+                    color: const Color(0xFF3A7CA5),
+                    size: 16,
+                  ),
                   const SizedBox(width: 6),
                   const Text(
                     'ออกจากระบบ',
@@ -295,7 +306,13 @@ class _CategoryCardState extends State<_CategoryCard> {
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       onTap: () {
-        // TODO: navigate to category page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                CategoryProductsPage(categoryTitle: widget.item.title),
+          ),
+        );
       },
       child: AnimatedScale(
         scale: _pressed ? 0.97 : 1.0,
