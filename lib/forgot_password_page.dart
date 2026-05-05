@@ -95,9 +95,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
       child: Container(
         width: 42, height: 42,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.45), borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.7)),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 2))],
+          color: Colors.white.withValues(alpha: 0.45), borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF3A7CA5), size: 22),
       ),
@@ -108,10 +108,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
     Container(
       width: 80, height: 80,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.6), shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: 0.6), shape: BoxShape.circle,
         boxShadow: [
-          BoxShadow(color: Colors.white.withOpacity(0.5), blurRadius: 16, spreadRadius: 2),
-          BoxShadow(color: const Color(0xFF7FB5B5).withOpacity(0.3), blurRadius: 24, offset: const Offset(0, 6)),
+          BoxShadow(color: Colors.white.withValues(alpha: 0.5), blurRadius: 16, spreadRadius: 2),
+          BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.3), blurRadius: 24, offset: const Offset(0, 6)),
         ],
       ),
       child: Icon(_sent ? Icons.mark_email_read_outlined : Icons.lock_reset_rounded, color: const Color(0xFF3A7CA5), size: 38),
@@ -127,11 +127,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
   Widget _formCard() => Container(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.55), borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: Colors.white.withOpacity(0.8)),
+      color: Colors.white.withValues(alpha: 0.55), borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
       boxShadow: [
-        BoxShadow(color: const Color(0xFF7FB5B5).withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8)),
-        BoxShadow(color: Colors.white.withOpacity(0.6), blurRadius: 1, offset: const Offset(0, -1)),
+        BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 8)),
+        BoxShadow(color: Colors.white.withValues(alpha: 0.6), blurRadius: 1, offset: const Offset(0, -1)),
       ],
     ),
     child: Form(
@@ -150,12 +150,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
             },
             decoration: InputDecoration(
               hintText: 'your@email.com',
-              hintStyle: TextStyle(color: const Color(0xFF5BA3B0).withOpacity(0.5), fontSize: 14),
+              hintStyle: TextStyle(color: const Color(0xFF5BA3B0).withValues(alpha: 0.5), fontSize: 14),
               prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF5BA3B0), size: 20),
-              filled: true, fillColor: Colors.white.withOpacity(0.6),
+              filled: true, fillColor: Colors.white.withValues(alpha: 0.6),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withOpacity(0.8))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withOpacity(0.8))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.8))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.8))),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFF3A7CA5), width: 1.5)),
               errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFE74C3C))),
               focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFE74C3C), width: 1.5)),
@@ -166,7 +166,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
         SizedBox(height: 50, child: ElevatedButton(
           onPressed: _loading ? null : _resetPassword,
           style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF3A7CA5), foregroundColor: Colors.white,
-            disabledBackgroundColor: const Color(0xFF3A7CA5).withOpacity(0.6),
+            disabledBackgroundColor: const Color(0xFF3A7CA5).withValues(alpha: 0.6),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 0),
           child: _loading
               ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
@@ -179,10 +179,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
   Widget _successCard() => Container(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.55), borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: Colors.white.withOpacity(0.8)),
+      color: Colors.white.withValues(alpha: 0.55), borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
       boxShadow: [
-        BoxShadow(color: const Color(0xFF7FB5B5).withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8)),
+        BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 8)),
       ],
     ),
     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
