@@ -136,15 +136,15 @@ class _HomePageState extends State<HomePage>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -185,16 +185,16 @@ class _HomePageState extends State<HomePage>
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 blurRadius: 20,
                 spreadRadius: 4,
               ),
               BoxShadow(
-                color: const Color(0xFF7FB5B5).withOpacity(0.3),
+                color: const Color(0xFF7FB5B5).withValues(alpha: 0.3),
                 blurRadius: 30,
                 offset: const Offset(0, 8),
               ),
@@ -270,12 +270,12 @@ class _TopBarButton extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.45),
+          color: Colors.white.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.7)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -321,17 +321,17 @@ class _CategoryCardState extends State<_CategoryCard> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.55),
+            color: Colors.white.withValues(alpha: 0.55),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.8), width: 1),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.8), width: 1),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF7FB5B5).withOpacity(0.2),
+                color: const Color(0xFF7FB5B5).withValues(alpha: 0.2),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
               BoxShadow(
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
                 blurRadius: 1,
                 offset: const Offset(0, -1),
               ),
@@ -344,7 +344,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5BA3B0).withOpacity(0.15),
+                  color: const Color(0xFF5BA3B0).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -367,7 +367,7 @@ class _CategoryCardState extends State<_CategoryCard> {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: const Color(0xFF3A7CA5).withOpacity(0.6),
+                color: const Color(0xFF3A7CA5).withValues(alpha: 0.6),
                 size: 22,
               ),
             ],

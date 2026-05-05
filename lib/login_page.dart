@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
-import 'package:google_sign_in_web/google_sign_in_web.dart' as web;
 import 'services/auth_service.dart';
 import 'signup_page.dart';
 import 'forgot_password_page.dart';
+import 'google_web_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -128,10 +127,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     Container(
       width: 90, height: 90,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.6), shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: 0.6), shape: BoxShape.circle,
         boxShadow: [
-          BoxShadow(color: Colors.white.withOpacity(0.5), blurRadius: 20, spreadRadius: 4),
-          BoxShadow(color: const Color(0xFF7FB5B5).withOpacity(0.3), blurRadius: 30, offset: const Offset(0, 8)),
+          BoxShadow(color: Colors.white.withValues(alpha: 0.5), blurRadius: 20, spreadRadius: 4),
+          BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.3), blurRadius: 30, offset: const Offset(0, 8)),
         ],
       ),
       child: const Center(child: Text('🛒', style: TextStyle(fontSize: 42))),
@@ -145,11 +144,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Widget _card() => Container(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.55), borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: Colors.white.withOpacity(0.8)),
+      color: Colors.white.withValues(alpha: 0.55), borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
       boxShadow: [
-        BoxShadow(color: const Color(0xFF7FB5B5).withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8)),
-        BoxShadow(color: Colors.white.withOpacity(0.6), blurRadius: 1, offset: const Offset(0, -1)),
+        BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 8)),
+        BoxShadow(color: Colors.white.withValues(alpha: 0.6), blurRadius: 1, offset: const Offset(0, -1)),
       ],
     ),
     child: Form(
@@ -187,7 +186,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         SizedBox(height: 50, child: ElevatedButton(
           onPressed: _loading ? null : _login,
           style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF3A7CA5), foregroundColor: Colors.white,
-            disabledBackgroundColor: const Color(0xFF3A7CA5).withOpacity(0.6),
+            disabledBackgroundColor: const Color(0xFF3A7CA5).withValues(alpha: 0.6),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 0),
           child: _loading
               ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
@@ -206,12 +205,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         controller: ctrl, keyboardType: keyboardType, obscureText: obscure, validator: validator,
         style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 15),
         decoration: InputDecoration(
-          hintText: hint, hintStyle: TextStyle(color: const Color(0xFF5BA3B0).withOpacity(0.5), fontSize: 14),
+          hintText: hint, hintStyle: TextStyle(color: const Color(0xFF5BA3B0).withValues(alpha: 0.5), fontSize: 14),
           prefixIcon: Icon(icon, color: const Color(0xFF5BA3B0), size: 20), suffixIcon: suffix,
-          filled: true, fillColor: Colors.white.withOpacity(0.6),
+          filled: true, fillColor: Colors.white.withValues(alpha: 0.6),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withOpacity(0.8))),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withOpacity(0.8))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.8))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.8))),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFF3A7CA5), width: 1.5)),
           errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFE74C3C))),
           focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Color(0xFFE74C3C), width: 1.5)),
@@ -222,28 +221,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   Widget _googleBtn() {
     if (kIsWeb) {
-      // On Web: use Google's styled sign-in button
-      final webPlugin = GoogleSignInPlatform.instance as web.GoogleSignInPlugin;
-      return SizedBox(
-        height: 50,
-        child: webPlugin.renderButton(
-          configuration: web.GSIButtonConfiguration(
-            type: web.GSIButtonType.standard,
-            theme: web.GSIButtonTheme.outline,
-            size: web.GSIButtonSize.large,
-            text: web.GSIButtonText.signin,
-            shape: web.GSIButtonShape.pill,
-            logoAlignment: web.GSIButtonLogoAlignment.center,
-            minimumWidth: 320,
-          ),
-        ),
-      );
+      return buildGoogleWebButton();
     }
     // On Mobile: use custom styled button
     return SizedBox(height: 50, child: OutlinedButton(
       onPressed: _gLoading ? null : _googleLogin,
-      style: OutlinedButton.styleFrom(backgroundColor: Colors.white.withOpacity(0.7),
-        side: BorderSide(color: Colors.white.withOpacity(0.9)),
+      style: OutlinedButton.styleFrom(backgroundColor: Colors.white.withValues(alpha: 0.7),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.9)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 0),
       child: _gLoading
           ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(color: Color(0xFF3A7CA5), strokeWidth: 2.5))
