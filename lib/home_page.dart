@@ -1,34 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    ),
-  );
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EZlife',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFB2D8D8),
-      ),
-      home: const HomePage(),
-    );
-  }
-}
+import 'services/auth_service.dart';
 
 // ─── Data Model ───────────────────────────────────────────────────────────────
 
@@ -139,7 +110,22 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('ออกจากระบบ'),
+                  content: const Text('คุณต้องการออกจากระบบหรือไม่?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ยกเลิก')),
+                    TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('ออกจากระบบ')),
+                  ],
+                ),
+              );
+              if (confirmed == true) {
+                await AuthService().signOut();
+              }
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
               decoration: BoxDecoration(
@@ -157,14 +143,21 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-              child: const Text(
-                'Login',
-                style: TextStyle(
-                  color: Color(0xFF3A7CA5),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.logout_rounded, color: const Color(0xFF3A7CA5), size: 16),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'ออกจากระบบ',
+                    style: TextStyle(
+                      color: Color(0xFF3A7CA5),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
