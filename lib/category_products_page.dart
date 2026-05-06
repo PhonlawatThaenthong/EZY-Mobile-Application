@@ -485,7 +485,19 @@ class _ProductCardState extends State<_ProductCard> {
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
-    return GestureDetector(
+    final cardLabel = [
+      p.name,
+      'ร้าน ${p.storeName}',
+      if (p.isOfficial) 'ร้านค้าทางการ',
+      'คะแนนรีวิว ${p.rating} จาก 5',
+      'ราคา ${p.price == p.price.toInt().toDouble() ? p.price.toInt() : p.price.toStringAsFixed(2)} บาท',
+    ].join(', ');
+
+    return Semantics(
+      label: cardLabel,
+      button: true,
+      excludeSemantics: true,
+      child: GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -678,7 +690,7 @@ class _ProductCardState extends State<_ProductCard> {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
