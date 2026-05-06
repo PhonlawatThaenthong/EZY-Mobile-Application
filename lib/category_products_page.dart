@@ -221,37 +221,41 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
         children: [
           Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  if (_isSearching) {
-                    setState(() {
-                      _isSearching = false;
-                      _searchQuery = '';
-                      _searchCtrl.clear();
-                    });
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                child: Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    _isSearching ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
-                    color: const Color(0xFF3A7CA5),
-                    size: 20,
+              Semantics(
+                label: _isSearching ? 'ปิดการค้นหา' : 'ย้อนกลับ',
+                button: true,
+                child: GestureDetector(
+                  onTap: () {
+                    if (_isSearching) {
+                      setState(() {
+                        _isSearching = false;
+                        _searchQuery = '';
+                        _searchCtrl.clear();
+                      });
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      _isSearching ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
+                      color: const Color(0xFF3A7CA5),
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
@@ -434,6 +438,13 @@ class _ProductCardState extends State<_ProductCard> {
     return '฿${price.toStringAsFixed(2)}';
   }
 
+  String _priceLabel(double price) {
+    final amount = price == price.toInt().toDouble()
+        ? '${price.toInt()}'
+        : price.toStringAsFixed(2);
+    return 'ราคา $amount บาท';
+  }
+
   Widget _buildImage(Product p, double emojiSize) {
     if (p.imageUrl != null) {
       final isNetwork = p.imageUrl!.startsWith('http');
@@ -612,42 +623,50 @@ class _ProductCardState extends State<_ProductCard> {
                       const Spacer(),
 
                       // Rating row
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star_rounded,
-                            color: Color(0xFFF5A623),
-                            size: 13,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            p.rating.toString(),
-                            style: const TextStyle(
-                              color: Color(0xFF4A8A9A),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
+                      Semantics(
+                        label: 'คะแนนรีวิว ${p.rating} คะแนน',
+                        excludeSemantics: true,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.star_rounded,
+                              color: Color(0xFFF5A623),
+                              size: 13,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 3),
+                            Text(
+                              p.rating.toString(),
+                              style: const TextStyle(
+                                color: Color(0xFF4A8A9A),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 6),
 
                       // Price
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF3A7CA5).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          _formatPrice(p.price),
-                          style: const TextStyle(
-                            color: Color(0xFF3A7CA5),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
+                      Semantics(
+                        label: _priceLabel(p.price),
+                        excludeSemantics: true,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF3A7CA5).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _formatPrice(p.price),
+                            style: const TextStyle(
+                              color: Color(0xFF3A7CA5),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
                       ),
@@ -675,6 +694,13 @@ class ProductDetailPage extends StatelessWidget {
       return '฿${price.toInt()}';
     }
     return '฿${price.toStringAsFixed(2)}';
+  }
+
+  String _priceLabel(double price) {
+    final amount = price == price.toInt().toDouble()
+        ? '${price.toInt()}'
+        : price.toStringAsFixed(2);
+    return 'ราคา $amount บาท';
   }
 
   @override
@@ -714,27 +740,31 @@ class ProductDetailPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Color(0xFF3A7CA5),
-                size: 20,
+          Semantics(
+            label: 'ย้อนกลับ',
+            button: true,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Color(0xFF3A7CA5),
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -880,29 +910,33 @@ class ProductDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E0),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      color: Color(0xFFF5A623),
-                      size: 15,
-                    ),
-                    const SizedBox(width: 3),
-                    Text(
-                      product.rating.toString(),
-                      style: const TextStyle(
-                        color: Color(0xFFE6920A),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+              Semantics(
+                label: 'คะแนนรีวิว ${product.rating} คะแนน',
+                excludeSemantics: true,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF3E0),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        color: Color(0xFFF5A623),
+                        size: 15,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 3),
+                      Text(
+                        product.rating.toString(),
+                        style: const TextStyle(
+                          color: Color(0xFFE6920A),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -950,22 +984,26 @@ class ProductDetailPage extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Price
-          Row(
-            children: [
-              const Text(
-                'ราคา',
-                style: TextStyle(color: Color(0xFF4A8A9A), fontSize: 14),
-              ),
-              const Spacer(),
-              Text(
-                _formatPrice(product.price),
-                style: const TextStyle(
-                  color: Color(0xFF3A7CA5),
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
+          Semantics(
+            label: _priceLabel(product.price),
+            excludeSemantics: true,
+            child: Row(
+              children: [
+                const Text(
+                  'ราคา',
+                  style: TextStyle(color: Color(0xFF4A8A9A), fontSize: 14),
                 ),
-              ),
-            ],
+                const Spacer(),
+                Text(
+                  _formatPrice(product.price),
+                  style: const TextStyle(
+                    color: Color(0xFF3A7CA5),
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

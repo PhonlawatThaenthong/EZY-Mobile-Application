@@ -90,16 +90,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with SingleTick
 
   Widget _topBar() => Align(
     alignment: Alignment.centerLeft,
-    child: GestureDetector(
-      onTap: () => Navigator.pop(context),
-      child: Container(
-        width: 42, height: 42,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.45), borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+    child: Semantics(
+      label: 'ย้อนกลับ',
+      button: true,
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          width: 42, height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.45), borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+          ),
+          child: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF3A7CA5), size: 22),
         ),
-        child: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF3A7CA5), size: 22),
       ),
     ),
   );
