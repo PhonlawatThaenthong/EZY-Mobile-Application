@@ -159,6 +159,9 @@ class CategoryProductsPage extends StatefulWidget {
 class _CategoryProductsPageState extends State<CategoryProductsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animCtrl;
+  bool _isSearching = false;
+  String _searchQuery = '';
+  final _searchCtrl = TextEditingController();
   late Animation<double> _fade;
 
   @override
@@ -175,10 +178,21 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
   @override
   void dispose() {
     _animCtrl.dispose();
+    _searchCtrl.dispose();
     super.dispose();
   }
 
-  List<Product> get _products => categoryProducts[widget.categoryTitle] ?? [];
+  List<Product> get _products {
+    final all = categoryProducts[widget.categoryTitle] ?? [];
+    if (_searchQuery.isEmpty) return all;
+    final q = _searchQuery.toLowerCase();
+    return all
+        .where((p) =>
+            p.name.toLowerCase().contains(q) ||
+            p.description.toLowerCase().contains(q) ||
+            p.storeName.toLowerCase().contains(q))
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,101 +217,168 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
+      child: Column(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 42,
-              height: 42,
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (_isSearching) {
+                    setState(() {
+                      _isSearching = false;
+                      _searchQuery = '';
+                      _searchCtrl.clear();
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    _isSearching ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
+                    color: const Color(0xFF3A7CA5),
+                    size: 20,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.categoryTitle,
+                      style: const TextStyle(
+                        color: Color(0xFF2A5F6F),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${_products.length} สินค้า',
+                      style: TextStyle(
+                        color: const Color(0xFF4A8A9A).withValues(alpha: 0.8),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() => _isSearching = !_isSearching);
+                  if (!_isSearching) {
+                    _searchQuery = '';
+                    _searchCtrl.clear();
+                  }
+                },
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: _isSearching
+                        ? const Color(0xFF3A7CA5).withValues(alpha: 0.15)
+                        : Colors.white.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.search_rounded,
+                    color: Color(0xFF3A7CA5),
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_isSearching) ...[
+            const SizedBox(height: 10),
+            Container(
+              height: 44,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.45),
+                color: Colors.white.withValues(alpha: 0.65),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Color(0xFF3A7CA5),
-                size: 20,
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.categoryTitle,
-                  style: const TextStyle(
-                    color: Color(0xFF2A5F6F),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
+              child: TextField(
+                controller: _searchCtrl,
+                autofocus: true,
+                style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: 'ค้นหาสินค้า...',
+                  hintStyle: TextStyle(
+                    color: const Color(0xFF5BA3B0).withValues(alpha: 0.6),
+                    fontSize: 14,
                   ),
+                  prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF5BA3B0), size: 20),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  '${_products.length} สินค้า',
-                  style: TextStyle(
-                    color: const Color(0xFF4A8A9A).withValues(alpha: 0.8),
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.search_rounded,
-                color: Color(0xFF3A7CA5),
-                size: 22,
+                onChanged: (v) => setState(() => _searchQuery = v.trim()),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
   }
 
   Widget _buildEmpty() {
+    final isFiltered = _searchQuery.isNotEmpty;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('📦', style: TextStyle(fontSize: 48)),
+          Text(isFiltered ? '🔍' : '📦', style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 12),
-          const Text(
-            'ยังไม่มีสินค้าในหมวดนี้',
-            style: TextStyle(
+          Text(
+            isFiltered ? 'ไม่พบสินค้าที่ค้นหา' : 'ยังไม่มีสินค้าในหมวดนี้',
+            style: const TextStyle(
               color: Color(0xFF4A8A9A),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
           ),
+          if (isFiltered) ...[
+            const SizedBox(height: 6),
+            Text(
+              '"$_searchQuery"',
+              style: TextStyle(
+                color: const Color(0xFF4A8A9A).withValues(alpha: 0.6),
+                fontSize: 13,
+              ),
+            ),
+          ],
         ],
       ),
     );
