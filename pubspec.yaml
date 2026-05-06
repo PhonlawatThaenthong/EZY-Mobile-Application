@@ -39,6 +39,7 @@ dependencies:
   google_sign_in: ^7.2.0
   google_sign_in_platform_interface: any
   google_sign_in_web: any
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:

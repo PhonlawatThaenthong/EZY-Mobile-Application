@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ─── Product Data Model ─────────────────────────────────────────────────────
 
@@ -7,6 +8,10 @@ class Product {
   final String description;
   final double price;
   final String imageEmoji;
+  // Network URL (https://...) or local asset path (assets/...). Falls back to imageEmoji if null/error.
+  final String? imageUrl;
+  // External shop link e.g. Shopee, Lazada. Opens in browser when tapping the buy button.
+  final String? shopUrl;
   final double rating;
   final bool isOfficial;
   final String storeName;
@@ -17,6 +22,8 @@ class Product {
     required this.description,
     required this.price,
     required this.imageEmoji,
+    this.imageUrl,
+    this.shopUrl,
     this.rating = 4.5,
     this.isOfficial = false,
     this.storeName = 'ร้านค้าทั่วไป',
@@ -31,95 +38,108 @@ final Map<String, List<Product>> categoryProducts = {
     Product(
       name: 'หูฟังไร้สาย',
       description: 'หูฟัง Bluetooth 5.3 เสียงดี แบตอึด',
-      price: 990,
+      price: 129,
       imageEmoji: '🎧',
-      rating: 4.7,
-      isOfficial: true,
-      storeName: 'Sony Official Store',
+      // ใส่ imageUrl เป็น URL รูปจาก Line หรือ path ของ assets ได้เลย เช่น:
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/sg-11134201-7renm-m860w0hl1a5jbe@resize_w900_nl.webp',
+      // imageUrl: 'assets/images/headphone.png',
+      shopUrl:
+          'https://shopee.co.th/X55-TWS-%E0%B8%AB%E0%B8%B9%E0%B8%9F%E0%B8%B1%E0%B8%87%E0%B9%84%E0%B8%A3%E0%B9%89%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B8%B4%E0%B9%82%E0%B8%AD-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%B3-i.1587426339.41465035967?extraParams=%7B%22display_model_id%22%3A281244495223%2C%22model_selection_logic%22%3A3%7D&rModelId=281244495223&sp_atk=0e926dc7-450c-421c-b7ca-90008d7b38db&vItemId=43819134795&vModelId=291568677719&vShopId=1449018616&xptdk=0e926dc7-450c-421c-b7ca-90008d7b38db',
+      rating: 4.9,
+      isOfficial: false,
+      storeName: 'dongbao',
       features: [
-        'เชื่อมต่อ Bluetooth 5.3 ระยะ 10 เมตร',
-        'แบตเตอรี่ใช้งานได้ 30 ชั่วโมง',
-        'ตัดเสียงรบกวน Active Noise Cancelling',
-        'กันน้ำระดับ IPX4',
-        'ชาร์จเร็ว 10 นาที ฟัง 1 ชั่วโมง',
+        'หูฟังไร้สาย TWS X55 สำหรับการฟังเพลงระหว่างนอนหลับ ด้วยการออกแบบที่สวมใส่สบาย ไม่ก่อให้เกิดการระคายเคือง เหมาะสำหรับการฟังเพลงหรือเสียงผ่อนคลายขณะนอนหลับ 🎶 เพิ่มความสะดวกสบายในการใช้งานด้วยฟังก์ชันชาร์จเร็ว ⚡ ทนทานต่อน้ำด้วยระดับ IPX5 ทำให้สามารถใช้งานได้ในสภาพอากาศที่หลากหลาย 💧 ตัวเลือกสี: สีกากี, สีชมพู, สีม่วง, สีฟ้า, สีขาว และสีดำ 🎨 เหมาะสำหรับการใช้งานทั่วไปและการออกกำลังกาย 🏋️‍♂️',
       ],
     ),
     Product(
       name: 'เคสมือถือ',
       description: 'เคสกันกระแทก สำหรับ iPhone/Android',
-      price: 299,
+      price: 129,
       imageEmoji: '📱',
-      rating: 4.5,
-      isOfficial: false,
-      storeName: 'TechCase Shop',
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-m7k9w3oyfj1qbe@resize_w900_nl.webp',
+      shopUrl:
+          'https://shopee.co.th/POP-MART-DIMOO-WORLD-%C3%97-DISNEY-Series-Phone-Case-for-iPhone-15-Pro-Max-16-Pro-16-Pro-Max-i.569947420.26230225539?extraParams=%7B%7D',
+      rating: 5.0,
+      isOfficial: true,
+      storeName: 'popmartofficial.th',
       features: [
-        'กันกระแทกได้ในระดับทหาร MIL-STD-810G',
-        'รองรับ MagSafe ชาร์จไร้สาย',
+        'Product Name: DIMOO WORLD x DISNEY Series-Phone Case',
+        'Main Material: Silicone/PVC/Aluminum Sheet',
         'ขอบนูนป้องกันหน้าจอและกล้อง',
-        'วัสดุ TPU + Polycarbonate',
+        'Product Size: Mobile Phone Same Size',
       ],
     ),
     Product(
       name: 'สายชาร์จ USB-C',
       description: 'สายชาร์จเร็ว 65W ยาว 1.5m',
-      price: 199,
+      price: 4,
       imageEmoji: '🔌',
-      rating: 4.4,
-      isOfficial: false,
-      storeName: 'CablePro',
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/th-11134207-7r98x-m015hgs4sip53c@resize_w900_nl.webp',
+      shopUrl:
+          'https://shopee.co.th/UGREEN-Uno-%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88-100W-USB-C-to-USB-C-%E0%B8%A3%E0%B8%AD%E0%B8%87%E0%B8%A3%E0%B8%B1%E0%B8%9A-PD-%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88%E0%B9%80%E0%B8%A3%E0%B9%87%E0%B8%A7-%E0%B8%AA%E0%B9%8D%E0%B8%B2%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-iPhone-16-Series-Samsung-S24-%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99-L509-i.361518092.26011039280?extraParams=%7B%22display_model_id%22%3A241569812660%2C%22model_selection_logic%22%3A3%7D&sp_atk=5f9dac49-e8a6-435c-9be3-a3fa1520c0da&xptdk=5f9dac49-e8a6-435c-9be3-a3fa1520c0da',
+      rating: 5.0,
+      isOfficial: true,
+      storeName: 'Ugreen Thailand',
       features: [
-        'รองรับการชาร์จเร็ว 65W PD',
-        'ความยาว 1.5 เมตร ใช้งานสะดวก',
-        'รองรับ Data Transfer 480Mbps',
-        'ทนทาน โค้งงอได้ 10,000 ครั้ง',
+        '1.ชาร์จเร็ว 100W : รองรับการชาร์จเร็วสูงสุด 100W สามารถชาร์จ MacBook Pro ได้ถึง 55% ภายใน 35 นาที',
+        '2.ดีไซน์แข็งแรงและทนทาน : สายเคเบิลถูกทดสอบการงอมากกว่า 10,000 ครั้ง พร้อมการเชื่อมด้วยเลเซอร์ เพื่อเพิ่มความทนทานต่อการใช้งานระยะยาว',
+        '3.รองรับอุปกรณ์หลากหลาย : สาย USB-C to USB-C รองรับการชาร์จและโอนถ่ายข้อมูลให้กับอุปกรณ์กว่า 1,000 รุ่น เช่น โทรศัพท์, แล็ปท็อป, แท็บเล็ต',
+        '4.ชิพ E-Marker อัจฉริยะ : มาพร้อมชิพ E-Marker ที่ตรวจสอบและปรับกำลังไฟอัตโนมัติ รองรับกำลังไฟ 87W, 65W, 30W, และ 20W ตามที่อุปกรณ์ต้องการ',
+        '5.โอนถ่ายข้อมูลความเร็วสูง : รองรับการโอนถ่ายข้อมูลที่ความเร็วสูงสุด 480 Mbps',
+        '6.รองรับ PD 3.0 : สามารถชาร์จ iPhone 16 Pro จาก 0% ถึง 42% ในเวลาเพียง 30 นาที ด้วยการรองรับ Power Delivery 3.0',
+        '7.สายถักเพื่อความยืดหยุ่นและป้องกันการขาด : ตัวสายถักเพิ่มความยืดหยุ่นและป้องกันการพันหรือขาดง่าย',
       ],
     ),
     Product(
-      name: 'เมาส์ไร้สาย',
+      name: 'เมาส์ไร้สาย Logitech Gaming Mouse Pro 2 Lightspeed Wireless',
       description: 'เมาส์ Wireless เงียบ ประหยัดถ่าน',
-      price: 450,
+      price: 4590,
       imageEmoji: '🖱️',
-      rating: 4.3,
-      isOfficial: true,
-      storeName: 'Logitech Official',
-      features: [
-        'คลิกเงียบลด 90% เหมาะทำงานออฟฟิศ',
-        'ถ่าน AA 1 ก้อน ใช้ได้นาน 18 เดือน',
-        'เชื่อมต่อผ่าน USB Nano Receiver',
-        'ปรับ DPI ได้ 1000/1600/2400',
-        'ใช้ได้กับ Windows, macOS, Linux',
-      ],
-    ),
-    Product(
-      name: 'แท่นชาร์จไร้สาย',
-      description: 'ที่ชาร์จ Wireless 15W สำหรับมือถือ',
-      price: 590,
-      imageEmoji: '🔋',
-      rating: 4.6,
-      isOfficial: true,
-      storeName: 'Anker Official Store',
-      features: [
-        'ชาร์จไร้สายสูงสุด 15W (Qi2)',
-        'รองรับ iPhone, Samsung, Pixel',
-        'ตรวจจับสิ่งแปลกปลอมอัตโนมัติ',
-        'LED แสดงสถานะการชาร์จ',
-        'มาพร้อม Adapter 20W ในกล่อง',
-      ],
-    ),
-    Product(
-      name: 'กระเป๋าเป้',
-      description: 'กระเป๋าเป้กันน้ำ ช่องใส่โน้ตบุ๊ก 15.6"',
-      price: 890,
-      imageEmoji: '🎒',
-      rating: 4.6,
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/th-11134207-81zte-mgbvhqcnuv4a42.webp',
+      shopUrl:
+          'https://shopee.co.th/%E0%B9%80%E0%B8%A1%E0%B8%B2%E0%B8%AA%E0%B9%8C%E0%B9%80%E0%B8%81%E0%B8%A1%E0%B8%A1%E0%B8%B4%E0%B9%88%E0%B8%87-Logitech-Gaming-Mouse-Pro-2-Lightspeed-Wireless-by-Banana-IT-i.22507473.47300599741?extraParams=%7B%22display_model_id%22%3A297112671580%2C%22model_selection_logic%22%3A3%7D&sp_atk=9e0358e4-acbb-4e5d-b96d-a378619139be&xptdk=9e0358e4-acbb-4e5d-b96d-a378619139be',
+      rating: 0,
       isOfficial: false,
-      storeName: 'BagWorld',
+      storeName: 'BaNANA Online SHOP',
       features: [
-        'ผ้ากันน้ำ 600D Oxford สุดทน',
-        'ช่องโน้ตบุ๊ก 15.6" บุนวมรอบด้าน',
-        'ช่องด้านหน้าใส่ของใช้จุกจิก',
-        'สายรัดหน้าอกและเอวปรับได้',
-        'พอร์ต USB ชาร์จมือถือได้จากภายนอก',
+        '• Wireless technology : 2.4GHz Wireless • Sensor technology : HERO 2 • Sensor Resolution : Up to 44,000 DPI • Number of buttons : 4-8 buttons • Scroll Whell : >88 G 2Tested on Logitech G640 Gaming Mouse Pad • Tilt scroll function : N/A • Battery Life : (constant motion) 5Battery life varies with use conditions Default lighting : 60 h , Lighting off : 95 h • Battery Type : N/A • Wireless Operating Distance : 2.4GHz Wireless • Interface : PC with Windows 10 or later and USB 2.0 port (Optional) Internet access for Logitech G HUB Software • Dimensions W x D x H : 125 x 63.5 x 40 mm. • Color : Black / White • Warranty : 2-Year Limited Hardware Warranty • Option : Technical Specifications Onboard memory 1Advanced features require Logitech G HUB Software available for download at logitechg.com/ghub • Macro Keys : N/A • Click life span : N/A',
+      ],
+    ),
+    Product(
+      name: 'HOCO CW63 แท่นชาร์จไร้สาย',
+      description: 'ที่ชาร์จ Wireless 15W สำหรับมือถือ',
+      price: 1320,
+      imageEmoji: '🔋',
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/sg-11134201-7rdyv-mbxp87hntu8e35@resize_w900_nl.webp',
+      shopUrl:
+          'https://shopee.co.th/HOCO-CW63-%E0%B9%81%E0%B8%97%E0%B9%88%E0%B8%99%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88%E0%B9%84%E0%B8%A3%E0%B9%89%E0%B8%AA%E0%B8%B2%E0%B8%A2-Qi2-%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88%E0%B9%80%E0%B8%A3%E0%B9%87%E0%B8%A7%E0%B8%AA%E0%B8%B9%E0%B8%87%E0%B8%AA%E0%B8%B8%E0%B8%94-15W-%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B9%87%E0%B8%81%E0%B8%94%E0%B8%B9%E0%B8%94%E0%B9%81%E0%B8%99%E0%B9%88%E0%B8%99-%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%87%E0%B9%88%E0%B8%B2%E0%B8%A2-Wireless-Charger-hc6-i.1218278547.40157754763?extraParams=%7B%22display_model_id%22%3A258607998183%2C%22model_selection_logic%22%3A3%7D&sp_atk=d9e0e809-96e5-4cc6-8c88-190757cde1ab&xptdk=d9e0e809-96e5-4cc6-8c88-190757cde1ab',
+      rating: 4.8,
+      isOfficial: true,
+      storeName: 'HOCO',
+      features: [
+        '- ชาร์จเร็วไร้สายสูงสุด 15W รองรับมาตรฐาน Qi2 Wireless Protocol ชาร์จไวทันใจ - ระบบจ่ายไฟอัจฉริยะ ปรับกำลังไฟอัตโนมัติตามอุปกรณ์ - แม่เหล็กดูดแน่น จัดตำแหน่งชาร์จง่ายไม่เลื่อนหลุด - ดีไซน์บางเฉียบ น้ำหนักเบา แค่ 55 กรัม พกพาสะดวก - วัสดุอลูมิเนียมอัลลอย แข็งแรง ทนทาน ระบายความร้อนได้ดี - สาย Type-C ยาว 1.2 เมตร ใช้งานยืดหยุ่น - ดีไซน์สวยหรู เข้ากับ iPhone และสมาร์ทโฟนที่รองรับการชาร์จไร้สาย',
+      ],
+    ),
+    Product(
+      name: 'MENSPE ผู้ชายแล็ปท็อปกระเป๋าเป้สะพายหลัง',
+      description: 'กระเป๋าเป้กันน้ำ ช่องใส่โน้ตบุ๊ก 15.6"',
+      price: 300,
+      imageEmoji: '🎒',
+      imageUrl:
+          'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-md4gpjwsiye400@resize_w900_nl.webp',
+      shopUrl:
+          'https://shopee.co.th/MENSPE-%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%B2%E0%B8%A2%E0%B9%81%E0%B8%A5%E0%B9%87%E0%B8%9B%E0%B8%97%E0%B9%87%E0%B8%AD%E0%B8%9B%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9B%E0%B9%8B%E0%B8%B2%E0%B9%80%E0%B8%9B%E0%B9%89%E0%B8%AA%E0%B8%B0%E0%B8%9E%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B9%80%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%B2%E0%B8%87%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9B%E0%B9%8B%E0%B8%B2%E0%B9%80%E0%B8%9B%E0%B9%89%E0%B8%AA%E0%B8%B0%E0%B8%9E%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%98%E0%B8%B8%E0%B8%A3%E0%B8%81%E0%B8%B4%E0%B8%88%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9B%E0%B9%8B%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9B%E0%B9%8B%E0%B8%B2%E0%B9%80%E0%B8%9B%E0%B9%89%E0%B8%AA%E0%B8%B0%E0%B8%9E%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87-%E0%B8%A2%E0%B8%B9%E0%B9%80%E0%B8%AD%E0%B8%AA%E0%B8%9A%E0%B8%B5-%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9B%E0%B9%8B%E0%B8%B2%E0%B8%AA%E0%B8%B0%E0%B8%9E%E0%B8%B2%E0%B8%A2%E0%B9%84%E0%B8%AB%E0%B8%A5%E0%B9%88%E0%B9%80%E0%B8%94-i.881968656.25846274686?extraParams=%7B%22display_model_id%22%3A260994779081%2C%22model_selection_logic%22%3A3%7D&sp_atk=26d466f5-5fad-4c06-a34f-547838f67f93&xptdk=26d466f5-5fad-4c06-a34f-547838f67f93',
+      rating: 4.8,
+      isOfficial: true,
+      storeName: 'MENSPE',
+      features: [
+        'วัสดุคุณภาพสูง: ผลิตจากผ้าโพลีเอสเตอร์คุณภาพสูงน้ำหนักเบาและระบายอากาศได้ดีทนต่อการสึกหรอและป้องกันรอยขีดข่วนกันน้ำ น้ำหนักเบาและความจุขนาดใหญ่: ไม่เพียง แต่สามารถใส่ของใช้ในชีวิตประจำวันเช่นแล็ปท็อปเสื้อผ้าร่มหนังสือ ฯลฯ ►ความจุขนาดใหญ่: กระเป๋าเป้มีกระเป๋าซิปสามช่องช่องใส่คอมพิวเตอร์และกระเป๋าด้านข้างหนึ่งช่องและสไตล์สีทึบด้านนอกของกระเป๋าแสดงถึงแฟชั่นและบุคลิกภาพ กระเป๋าเป้สำหรับผู้ชายและผู้หญิงนี้เหมาะสำหรับทุกโอกาส: กระเป๋าเป้สำหรับผู้ชายและผู้หญิงนี้เหมาะสำหรับโรงเรียนทำงานท่องเที่ยวเดินป่าปีนเขาและตั้งแคมป์',
       ],
     ),
   ],
@@ -333,6 +353,43 @@ class _ProductCardState extends State<_ProductCard> {
     return '฿${price.toStringAsFixed(2)}';
   }
 
+  Widget _buildImage(Product p, double emojiSize) {
+    if (p.imageUrl != null) {
+      final isNetwork = p.imageUrl!.startsWith('http');
+      return ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: isNetwork
+            ? Image.network(
+                p.imageUrl!,
+                width: double.infinity,
+                height: 110,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Center(
+                  child: Text(
+                    p.imageEmoji,
+                    style: TextStyle(fontSize: emojiSize),
+                  ),
+                ),
+              )
+            : Image.asset(
+                p.imageUrl!,
+                width: double.infinity,
+                height: 110,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Center(
+                  child: Text(
+                    p.imageEmoji,
+                    style: TextStyle(fontSize: emojiSize),
+                  ),
+                ),
+              ),
+      );
+    }
+    return Center(
+      child: Text(p.imageEmoji, style: TextStyle(fontSize: emojiSize)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
@@ -383,12 +440,7 @@ class _ProductCardState extends State<_ProductCard> {
                         top: Radius.circular(20),
                       ),
                     ),
-                    child: Center(
-                      child: Text(
-                        p.imageEmoji,
-                        style: const TextStyle(fontSize: 48),
-                      ),
-                    ),
+                    child: _buildImage(p, 48),
                   ),
                   if (p.isOfficial)
                     Positioned(
@@ -621,6 +673,40 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  Widget _buildDetailImage() {
+    if (product.imageUrl != null) {
+      final isNetwork = product.imageUrl!.startsWith('http');
+      return isNetwork
+          ? Image.network(
+              product.imageUrl!,
+              width: double.infinity,
+              height: 220,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => Center(
+                child: Text(
+                  product.imageEmoji,
+                  style: const TextStyle(fontSize: 90),
+                ),
+              ),
+            )
+          : Image.asset(
+              product.imageUrl!,
+              width: double.infinity,
+              height: 220,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => Center(
+                child: Text(
+                  product.imageEmoji,
+                  style: const TextStyle(fontSize: 90),
+                ),
+              ),
+            );
+    }
+    return Center(
+      child: Text(product.imageEmoji, style: const TextStyle(fontSize: 90)),
+    );
+  }
+
   Widget _buildHeroImage() {
     return Container(
       width: double.infinity,
@@ -639,11 +725,9 @@ class ProductDetailPage extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Center(
-            child: Text(
-              product.imageEmoji,
-              style: const TextStyle(fontSize: 90),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: _buildDetailImage(),
           ),
           if (product.isOfficial)
             Positioned(
@@ -878,27 +962,46 @@ class ProductDetailPage extends StatelessWidget {
   }
 
   Widget _buildBuyButton(BuildContext context) {
+    final hasLink = product.shopUrl != null;
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: hasLink
+            ? () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final uri = Uri.parse(product.shopUrl!);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                } else {
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('ไม่สามารถเปิดลิงค์ได้')),
+                  );
+                }
+              }
+            : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF3A7CA5),
+          disabledBackgroundColor: const Color(
+            0xFF3A7CA5,
+          ).withValues(alpha: 0.4),
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.shopping_cart_rounded, size: 20),
-            SizedBox(width: 10),
+            Icon(
+              hasLink ? Icons.open_in_new_rounded : Icons.link_off_rounded,
+              size: 20,
+            ),
+            const SizedBox(width: 10),
             Text(
-              'หยิบใส่ตะกร้า',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              hasLink ? 'สั่งซื้อสินค้า' : 'ไม่มีลิงค์สั่งซื้อ',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
           ],
         ),
