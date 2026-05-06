@@ -29,6 +29,7 @@ class Product {
     this.storeName = 'ร้านค้าทั่วไป',
     this.features = const [],
   });
+
 }
 
 // ─── Sample Products per Category ───────────────────────────────────────────
@@ -159,10 +160,10 @@ class CategoryProductsPage extends StatefulWidget {
 class _CategoryProductsPageState extends State<CategoryProductsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animCtrl;
+  late Animation<double> _fade;
   bool _isSearching = false;
   String _searchQuery = '';
   final _searchCtrl = TextEditingController();
-  late Animation<double> _fade;
 
   @override
   void initState() {
