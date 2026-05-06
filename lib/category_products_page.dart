@@ -222,20 +222,10 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
           Row(
             children: [
               Semantics(
-                label: _isSearching ? 'ปิดการค้นหา' : 'ย้อนกลับ',
+                label: 'ย้อนกลับ',
                 button: true,
                 child: GestureDetector(
-                  onTap: () {
-                    if (_isSearching) {
-                      setState(() {
-                        _isSearching = false;
-                        _searchQuery = '';
-                        _searchCtrl.clear();
-                      });
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
+                  onTap: () => Navigator.pop(context),
                   child: Container(
                     width: 42,
                     height: 42,
@@ -251,9 +241,9 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                         ),
                       ],
                     ),
-                    child: Icon(
-                      _isSearching ? Icons.close_rounded : Icons.arrow_back_ios_new_rounded,
-                      color: const Color(0xFF3A7CA5),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Color(0xFF3A7CA5),
                       size: 20,
                     ),
                   ),
