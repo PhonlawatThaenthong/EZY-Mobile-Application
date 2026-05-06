@@ -284,35 +284,39 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() => _isSearching = !_isSearching);
-                  if (!_isSearching) {
-                    _searchQuery = '';
-                    _searchCtrl.clear();
-                  }
-                },
-                child: Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: _isSearching
-                        ? const Color(0xFF3A7CA5).withValues(alpha: 0.15)
-                        : Colors.white.withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.search_rounded,
-                    color: Color(0xFF3A7CA5),
-                    size: 22,
+              Semantics(
+                label: _isSearching ? 'ปิดการค้นหา' : 'ค้นหาสินค้า',
+                button: true,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() => _isSearching = !_isSearching);
+                    if (!_isSearching) {
+                      _searchQuery = '';
+                      _searchCtrl.clear();
+                    }
+                  },
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: _isSearching
+                          ? const Color(0xFF3A7CA5).withValues(alpha: 0.15)
+                          : Colors.white.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.search_rounded,
+                      color: Color(0xFF3A7CA5),
+                      size: 22,
+                    ),
                   ),
                 ),
               ),
@@ -334,21 +338,27 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                   ),
                 ],
               ),
-              child: TextField(
-                controller: _searchCtrl,
-                autofocus: true,
-                style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'ค้นหาสินค้า...',
-                  hintStyle: TextStyle(
-                    color: const Color(0xFF5BA3B0).withValues(alpha: 0.6),
-                    fontSize: 14,
+              child: Semantics(
+                label: 'ช่องค้นหาสินค้า',
+                textField: true,
+                child: TextField(
+                  controller: _searchCtrl,
+                  autofocus: true,
+                  style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 14),
+                  decoration: InputDecoration(
+                    hintText: 'ค้นหาสินค้า...',
+                    hintStyle: TextStyle(
+                      color: const Color(0xFF5BA3B0).withValues(alpha: 0.6),
+                      fontSize: 14,
+                    ),
+                    prefixIcon: ExcludeSemantics(
+                      child: Icon(Icons.search_rounded, color: Color(0xFF5BA3B0), size: 20),
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF5BA3B0), size: 20),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  onChanged: (v) => setState(() => _searchQuery = v.trim()),
                 ),
-                onChanged: (v) => setState(() => _searchQuery = v.trim()),
               ),
             ),
           ],
