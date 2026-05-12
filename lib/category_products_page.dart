@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'services/favorites_service.dart';
 
 // ─── Product Data Model ─────────────────────────────────────────────────────
 
@@ -29,7 +30,6 @@ class Product {
     this.storeName = 'ร้านค้าทั่วไป',
     this.features = const [],
   });
-
 }
 
 // ─── Sample Products per Category ───────────────────────────────────────────
@@ -160,10 +160,10 @@ class CategoryProductsPage extends StatefulWidget {
 class _CategoryProductsPageState extends State<CategoryProductsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animCtrl;
-  late Animation<double> _fade;
   bool _isSearching = false;
   String _searchQuery = '';
   final _searchCtrl = TextEditingController();
+  late Animation<double> _fade;
 
   @override
   void initState() {
@@ -188,10 +188,12 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
     if (_searchQuery.isEmpty) return all;
     final q = _searchQuery.toLowerCase();
     return all
-        .where((p) =>
-            p.name.toLowerCase().contains(q) ||
-            p.description.toLowerCase().contains(q) ||
-            p.storeName.toLowerCase().contains(q))
+        .where(
+          (p) =>
+              p.name.toLowerCase().contains(q) ||
+              p.description.toLowerCase().contains(q) ||
+              p.storeName.toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -233,7 +235,9 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.06),
@@ -294,7 +298,9 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                           ? const Color(0xFF3A7CA5).withValues(alpha: 0.15)
                           : Colors.white.withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.06),
@@ -335,7 +341,10 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                 child: TextField(
                   controller: _searchCtrl,
                   autofocus: true,
-                  style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 14),
+                  style: const TextStyle(
+                    color: Color(0xFF2A5F6F),
+                    fontSize: 14,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'ค้นหาสินค้า...',
                     hintStyle: TextStyle(
@@ -343,7 +352,11 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
                       fontSize: 14,
                     ),
                     prefixIcon: ExcludeSemantics(
-                      child: Icon(Icons.search_rounded, color: Color(0xFF5BA3B0), size: 20),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: Color(0xFF5BA3B0),
+                        size: 20,
+                      ),
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -431,6 +444,7 @@ class _ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<_ProductCard> {
   bool _pressed = false;
+  final _favService = FavoritesService();
 
   String _formatPrice(double price) {
     if (price == price.toInt().toDouble()) {
@@ -497,210 +511,318 @@ class _ProductCardState extends State<_ProductCard> {
     return Semantics(
       label: cardLabel,
       button: true,
-      excludeSemantics: true,
+      excludeSemantics: false,
       child: GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ProductDetailPage(product: p)),
-        );
-      },
-      child: AnimatedScale(
-        scale: _pressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.65),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.85)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF7FB5B5).withValues(alpha: 0.18),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.7),
-                blurRadius: 1,
-                offset: const Offset(0, -1),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Image area with official badge ──────────────────────────
-              Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE8F4F4).withValues(alpha: 0.6),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(20),
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ProductDetailPage(product: p)),
+          );
+        },
+        child: AnimatedScale(
+          scale: _pressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.65),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.85)),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF7FB5B5).withValues(alpha: 0.18),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  blurRadius: 1,
+                  offset: const Offset(0, -1),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Image area with official badge + favorite ────────────────
+                Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8F4F4).withValues(alpha: 0.6),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
                       ),
+                      child: _buildImage(p, 48),
                     ),
-                    child: _buildImage(p, 48),
-                  ),
-                  if (p.isOfficial)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A73E8),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(
-                              Icons.verified_rounded,
-                              color: Colors.white,
-                              size: 10,
-                            ),
-                            SizedBox(width: 3),
-                            Text(
-                              'Official',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              // ── Product Info ────────────────────────────────────────────
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Name
-                      Text(
-                        p.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF2A5F6F),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.1,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-
-                      // Store name
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.storefront_rounded,
-                            size: 11,
-                            color: const Color(
-                              0xFF4A8A9A,
-                            ).withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              p.storeName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: const Color(
-                                  0xFF4A8A9A,
-                                ).withValues(alpha: 0.75),
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const Spacer(),
-
-                      // Rating row
-                      Semantics(
-                        label: 'คะแนนรีวิว ${p.rating} คะแนน',
-                        excludeSemantics: true,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              color: Color(0xFFF5A623),
-                              size: 13,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              p.rating.toString(),
-                              style: const TextStyle(
-                                color: Color(0xFF4A8A9A),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-
-                      // Price
-                      Semantics(
-                        label: _priceLabel(p.price),
-                        excludeSemantics: true,
+                    if (p.isOfficial)
+                      Positioned(
+                        top: 8,
+                        left: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            horizontal: 7,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF3A7CA5).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            color: const Color(0xFF1A73E8),
+                            borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Text(
-                            _formatPrice(p.price),
-                            style: const TextStyle(
-                              color: Color(0xFF3A7CA5),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(
+                                Icons.verified_rounded,
+                                color: Colors.white,
+                                size: 10,
+                              ),
+                              SizedBox(width: 3),
+                              Text(
+                                'Official',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+
+                  ],
+                ),
+
+                // ── Product Info ────────────────────────────────────────────
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Name
+                        Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Color(0xFF2A5F6F),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+
+                        // Store name
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.storefront_rounded,
+                              size: 11,
+                              color: const Color(
+                                0xFF4A8A9A,
+                              ).withValues(alpha: 0.7),
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                p.storeName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: const Color(
+                                    0xFF4A8A9A,
+                                  ).withValues(alpha: 0.75),
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const Spacer(),
+
+                        // Rating row
+                        Semantics(
+                          label: 'คะแนนรีวิว ${p.rating} คะแนน',
+                          excludeSemantics: true,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star_rounded,
+                                color: Color(0xFFF5A623),
+                                size: 13,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                p.rating.toString(),
+                                style: const TextStyle(
+                                  color: Color(0xFF4A8A9A),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+
+                        // Price + Favorite row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Semantics(
+                                label: _priceLabel(p.price),
+                                excludeSemantics: true,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0xFF3A7CA5,
+                                    ).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    _formatPrice(p.price),
+                                    style: const TextStyle(
+                                      color: Color(0xFF3A7CA5),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            // ── Favorite heart button ────────────────────
+                            StreamBuilder<bool>(
+                              stream: _favService.isFavorite(p),
+                              builder: (context, snap) {
+                                final isFav = snap.data ?? false;
+                                return Semantics(
+                                  label: isFav
+                                      ? 'ลบออกจากรายการโปรด'
+                                      : 'เพิ่มในรายการโปรด',
+                                  button: true,
+                                  // TalkBack ใช้ onTap นี้ (ไม่ผ่าน GestureDetector)
+                                  onTap: () async {
+                                    final added = await _favService.toggleFavorite(p);
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            added
+                                                ? 'เพิ่ม "${p.name}" ในรายการโปรดแล้ว ❤️'
+                                                : 'ลบ "${p.name}" ออกจากรายการโปรดแล้ว',
+                                          ),
+                                          duration: const Duration(seconds: 2),
+                                          backgroundColor: const Color(0xFF3A7CA5),
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  // ExcludeSemantics ป้องกัน GestureDetector สร้าง node ซ้ำ
+                                  child: ExcludeSemantics(
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final added = await _favService.toggleFavorite(p);
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                added
+                                                    ? 'เพิ่ม "${p.name}" ในรายการโปรดแล้ว ❤️'
+                                                    : 'ลบ "${p.name}" ออกจากรายการโปรดแล้ว',
+                                              ),
+                                              duration: const Duration(seconds: 2),
+                                              backgroundColor: const Color(0xFF3A7CA5),
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: isFav
+                                              ? const Color(0xFFE05C7A)
+                                                  .withValues(alpha: 0.15)
+                                              : Colors.white
+                                                  .withValues(alpha: 0.9),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withValues(alpha: 0.08),
+                                              blurRadius: 6,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Icon(
+                                          isFav
+                                              ? Icons.favorite_rounded
+                                              : Icons.favorite_border_rounded,
+                                          color: const Color(0xFFE05C7A),
+                                          size: 17,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
 // ─── Product Detail Page ────────────────────────────────────────────────────
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final Product product;
 
   const ProductDetailPage({super.key, required this.product});
+
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  final _favService = FavoritesService();
+
+  Product get product => widget.product;
 
   String _formatPrice(double price) {
     if (price == price.toInt().toDouble()) {
@@ -764,7 +886,9 @@ class ProductDetailPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.45),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.06),
@@ -791,6 +915,95 @@ class ProductDetailPage extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
+          ),
+          // ── Favorite button in detail header ─────────────────────────
+          StreamBuilder<bool>(
+            stream: _favService.isFavorite(product),
+            builder: (context, snap) {
+              final isFav = snap.data ?? false;
+              return Semantics(
+                label: isFav
+                    ? 'ลบออกจากรายการโปรด'
+                    : 'เพิ่มในรายการโปรด',
+                button: true,
+                // TalkBack ใช้ onTap นี้ (ไม่ผ่าน GestureDetector)
+                onTap: () async {
+                  final added = await _favService.toggleFavorite(product);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          added
+                              ? 'เพิ่ม "${product.name}" ในรายการโปรดแล้ว ❤️'
+                              : 'ลบ "${product.name}" ออกจากรายการโปรดแล้ว',
+                        ),
+                        duration: const Duration(seconds: 2),
+                        backgroundColor: const Color(0xFF3A7CA5),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    );
+                  }
+                },
+                // ExcludeSemantics ป้องกัน GestureDetector สร้าง node ซ้ำ
+                child: ExcludeSemantics(
+                  child: GestureDetector(
+                    onTap: () async {
+                      final added = await _favService.toggleFavorite(product);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              added
+                                  ? 'เพิ่ม "${product.name}" ในรายการโปรดแล้ว ❤️'
+                                  : 'ลบ "${product.name}" ออกจากรายการโปรดแล้ว',
+                            ),
+                            duration: const Duration(seconds: 2),
+                            backgroundColor: const Color(0xFF3A7CA5),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: isFav
+                            ? const Color(0xFFE05C7A).withValues(alpha: 0.12)
+                            : Colors.white.withValues(alpha: 0.45),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isFav
+                              ? const Color(0xFFE05C7A).withValues(alpha: 0.4)
+                              : Colors.white.withValues(alpha: 0.7),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.06),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        isFav
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: const Color(0xFFE05C7A),
+                        size: 22,
+                      ),
+                    ),
+                  ),  // GestureDetector
+                ),  // ExcludeSemantics
+              );
+            },
           ),
         ],
       ),
@@ -927,7 +1140,10 @@ class ProductDetailPage extends StatelessWidget {
                 label: 'คะแนนรีวิว ${product.rating} คะแนน',
                 excludeSemantics: true,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF3E0),
                     borderRadius: BorderRadius.circular(8),

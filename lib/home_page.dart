@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
 import 'category_products_page.dart';
+import 'favorites_page.dart';
 
 // ─── Data Model ───────────────────────────────────────────────────────────────
 
@@ -110,7 +111,27 @@ class _HomePageState extends State<HomePage>
               },
             ),
           ),
-          GestureDetector(
+          // ── Right side buttons ──────────────────────────────────────────
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Favorites button ────────────────────────────────────────
+              Semantics(
+                label: 'รายการโปรด',
+                button: true,
+                child: _TopBarButton(
+                  icon: Icons.favorite_rounded,
+                  color: const Color(0xFFE05C7A),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FavoritesPage()),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              GestureDetector(
             onTap: () async {
               final confirmed = await showDialog<bool>(
                 context: context,
@@ -171,6 +192,8 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
             ),
+            ),
+            ],
           ),
         ],
       ),
@@ -259,11 +282,13 @@ class _HomePageState extends State<HomePage>
 class _TopBarButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
+  final Color? color;
 
-  const _TopBarButton({required this.icon, required this.onTap});
+  const _TopBarButton({required this.icon, required this.onTap, this.color});
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = color ?? const Color(0xFF3A7CA5);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -281,7 +306,7 @@ class _TopBarButton extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(icon, color: const Color(0xFF3A7CA5), size: 22),
+        child: Icon(icon, color: iconColor, size: 22),
       ),
     );
   }
