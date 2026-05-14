@@ -1,3 +1,4 @@
+import 'package:flutter/semantics.dart';
 import 'package:flutter/material.dart';
 import 'category_products_page.dart';
 import 'services/favorites_service.dart';
@@ -130,18 +131,20 @@ class _FavoritesPageState extends State<FavoritesPage>
               ],
             ),
           ),
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F4F4).withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
-            ),
-            child: const Icon(
-              Icons.favorite_rounded,
-              color: Color(0xFFE05C7A),
-              size: 22,
+          ExcludeSemantics(
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F4F4).withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+              ),
+              child: const Icon(
+                Icons.favorite_rounded,
+                color: Color(0xFFE05C7A),
+                size: 22,
+              ),
             ),
           ),
         ],
@@ -156,25 +159,27 @@ class _FavoritesPageState extends State<FavoritesPage>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.55),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFE05C7A).withValues(alpha: 0.15),
-                  blurRadius: 24,
-                  spreadRadius: 4,
+          ExcludeSemantics(
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.55),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFE05C7A).withValues(alpha: 0.15),
+                    blurRadius: 24,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.favorite_border_rounded,
+                  color: Color(0xFFE05C7A),
+                  size: 46,
                 ),
-              ],
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.favorite_border_rounded,
-                color: Color(0xFFE05C7A),
-                size: 46,
               ),
             ),
           ),
@@ -188,13 +193,17 @@ class _FavoritesPageState extends State<FavoritesPage>
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'กดปุ่ม ❤️ บนสินค้าที่ชอบเพื่อบันทึกไว้ที่นี่',
-            style: TextStyle(
-              color: const Color(0xFF4A8A9A).withValues(alpha: 0.8),
-              fontSize: 14,
+          Semantics(
+            label: 'กดปุ่มหัวใจบนสินค้าที่ชอบเพื่อบันทึกไว้ที่นี่',
+            excludeSemantics: true,
+            child: Text(
+              'กดปุ่ม ❤️ บนสินค้าที่ชอบเพื่อบันทึกไว้ที่นี่',
+              style: TextStyle(
+                color: const Color(0xFF4A8A9A).withValues(alpha: 0.8),
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -263,9 +272,11 @@ class _FavoriteProductCardState extends State<_FavoriteProductCard> {
                 width: double.infinity,
                 height: 110,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Center(
-                  child: Text(p.imageEmoji,
-                      style: const TextStyle(fontSize: 48)),
+                errorBuilder: (_, _, _) => ExcludeSemantics(
+                  child: Center(
+                    child: Text(p.imageEmoji,
+                        style: const TextStyle(fontSize: 48)),
+                  ),
                 ),
               )
             : Image.asset(
@@ -273,255 +284,241 @@ class _FavoriteProductCardState extends State<_FavoriteProductCard> {
                 width: double.infinity,
                 height: 110,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Center(
-                  child: Text(p.imageEmoji,
-                      style: const TextStyle(fontSize: 48)),
+                errorBuilder: (_, _, _) => ExcludeSemantics(
+                  child: Center(
+                    child: Text(p.imageEmoji,
+                        style: const TextStyle(fontSize: 48)),
+                  ),
                 ),
               ),
       );
     }
-    return Center(
-        child: Text(p.imageEmoji, style: const TextStyle(fontSize: 48)));
+    return ExcludeSemantics(
+      child: Center(
+          child: Text(p.imageEmoji, style: const TextStyle(fontSize: 48))),
+    );
+  }
+
+  Future<void> _removeFavorite(BuildContext context, Product p) async {    await _service.toggleFavorite(p);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('ลบ "${p.name}" ออกจากรายการโปรดแล้ว'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: const Color(0xFF3A7CA5),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
+    final priceAmount = p.price == p.price.toInt().toDouble()
+        ? '${p.price.toInt()}'
+        : p.price.toStringAsFixed(2);
 
     return Semantics(
       label: [
         p.name,
         'ร้าน ${p.storeName}',
+        if (p.isOfficial) 'ร้านค้าทางการ',
         'คะแนนรีวิว ${p.rating} คะแนน',
-        'ราคา ${p.price == p.price.toInt().toDouble() ? p.price.toInt() : p.price.toStringAsFixed(2)} บาท',
+        'ราคา $priceAmount บาท',
       ].join(', '),
       button: true,
+      excludeSemantics: true,
+      customSemanticsActions: {
+        const CustomSemanticsAction(label: 'ลบออกจากรายการโปรด'): () =>
+            _removeFavorite(context, p),
+      },
       child: GestureDetector(
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) => setState(() => _pressed = false),
         onTapCancel: () => setState(() => _pressed = false),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => ProductDetailPage(product: p)),
-          );
-        },
-      child: AnimatedScale(
-        scale: _pressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.65),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.85)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF7FB5B5).withValues(alpha: 0.18),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Image + remove button ───────────────────────────────────
-              Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE8F4F4).withValues(alpha: 0.6),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(20),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ProductDetailPage(product: p)),
+        ),
+        child: AnimatedScale(
+          scale: _pressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.65),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.85)),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF7FB5B5).withValues(alpha: 0.18),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Image + remove button ─────────────────────────────────
+                Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8F4F4).withValues(alpha: 0.6),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      child: _buildImage(p),
+                    ),
+                    if (p.isOfficial)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: ExcludeSemantics(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1A73E8),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.verified_rounded,
+                                    color: Colors.white, size: 10),
+                                SizedBox(width: 3),
+                                Text('Official',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w700)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Remove button — visual only, accessibility ใช้ customSemanticsActions
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: ExcludeSemantics(
+                        child: GestureDetector(
+                          onTap: () => _removeFavorite(context, p),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(Icons.favorite_rounded,
+                                color: Color(0xFFE05C7A), size: 16),
+                          ),
+                        ),
                       ),
                     ),
-                    child: _buildImage(p),
-                  ),
-                  // Official badge
-                  if (p.isOfficial)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A73E8),
-                          borderRadius: BorderRadius.circular(6),
+                  ],
+                ),
+
+                // ── Product Info ───────────────────────────────────────────
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Color(0xFF2A5F6F),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
+                        const SizedBox(height: 3),
+                        Row(
                           children: [
-                            Icon(Icons.verified_rounded,
-                                color: Colors.white, size: 10),
-                            SizedBox(width: 3),
-                            Text(
-                              'Official',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w700,
+                            ExcludeSemantics(
+                              child: Icon(Icons.storefront_rounded,
+                                  size: 11,
+                                  color: const Color(0xFF4A8A9A)
+                                      .withValues(alpha: 0.7)),
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                p.storeName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: const Color(0xFF4A8A9A)
+                                      .withValues(alpha: 0.75),
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  // Remove from favorites button
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Semantics(
-                      label: 'ลบออกจากรายการโปรด',
-                      button: true,
-                      onTap: () async {
-                        await _service.toggleFavorite(p);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'ลบ "${p.name}" ออกจากรายการโปรดแล้ว',
-                              ),
-                              duration: const Duration(seconds: 2),
-                              backgroundColor: const Color(0xFF3A7CA5),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: GestureDetector(
-                        onTap: () async {
-                          await _service.toggleFavorite(p);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'ลบ "${p.name}" ออกจากรายการโปรดแล้ว',
-                                ),
-                                duration: const Duration(seconds: 2),
-                                backgroundColor: const Color(0xFF3A7CA5),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
+                        const Spacer(),
+                        ExcludeSemantics(
+                          child: Row(
+                            children: [
+                              const Icon(Icons.star_rounded,
+                                  color: Color(0xFFF5A623), size: 13),
+                              const SizedBox(width: 3),
+                              Text(p.rating.toString(),
+                                  style: const TextStyle(
+                                    color: Color(0xFF4A8A9A),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  )),
                             ],
                           ),
-                          child: const ExcludeSemantics(
-                            child: Icon(
-                              Icons.favorite_rounded,
-                              color: Color(0xFFE05C7A),
-                              size: 16,
+                        ),
+                        const SizedBox(height: 6),
+                        ExcludeSemantics(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color:
+                                  const Color(0xFF3A7CA5).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                            child: Text(_formatPrice(p.price),
+                                style: const TextStyle(
+                                  color: Color(0xFF3A7CA5),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                )),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-
-              // ── Product Info ─────────────────────────────────────────────
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        p.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF2A5F6F),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Icon(Icons.storefront_rounded,
-                              size: 11,
-                              color: const Color(0xFF4A8A9A)
-                                  .withValues(alpha: 0.7)),
-                          const SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              p.storeName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: const Color(0xFF4A8A9A)
-                                    .withValues(alpha: 0.75),
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          const Icon(Icons.star_rounded,
-                              color: Color(0xFFF5A623), size: 13),
-                          const SizedBox(width: 3),
-                          Text(
-                            p.rating.toString(),
-                            style: const TextStyle(
-                              color: Color(0xFF4A8A9A),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF3A7CA5).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          _formatPrice(p.price),
-                          style: const TextStyle(
-                            color: Color(0xFF3A7CA5),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
