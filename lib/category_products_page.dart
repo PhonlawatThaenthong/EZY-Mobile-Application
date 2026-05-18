@@ -3,6 +3,79 @@ import 'package:flutter/semantics.dart' show CustomSemanticsAction;
 import 'package:url_launcher/url_launcher.dart';
 import 'services/favorites_service.dart';
 
+// ─── Platform Enum ───────────────────────────────────────────────────────────
+
+/// Platform ที่สินค้าวางขาย
+enum ShopPlatform {
+  shopee,
+  lazada,
+  tiktok,
+  amazon,
+  other;
+
+  String get label {
+    switch (this) {
+      case ShopPlatform.shopee:
+        return 'Shopee';
+      case ShopPlatform.lazada:
+        return 'Lazada';
+      case ShopPlatform.tiktok:
+        return 'TikTok Shop';
+      case ShopPlatform.amazon:
+        return 'Amazon';
+      case ShopPlatform.other:
+        return 'อื่นๆ';
+    }
+  }
+
+  String get emoji {
+    switch (this) {
+      case ShopPlatform.shopee:
+        return '🛒';
+      case ShopPlatform.lazada:
+        return '🛍️';
+      case ShopPlatform.tiktok:
+        return '🎵';
+      case ShopPlatform.amazon:
+        return '📦';
+      case ShopPlatform.other:
+        return '🏪';
+    }
+  }
+
+  /// Brand color ของแต่ละ platform
+  Color get color {
+    switch (this) {
+      case ShopPlatform.shopee:
+        return const Color(0xFFEE4D2D);
+      case ShopPlatform.lazada:
+        return const Color(0xFF0F146D);
+      case ShopPlatform.tiktok:
+        return const Color(0xFF010101);
+      case ShopPlatform.amazon:
+        return const Color(0xFFFF9900);
+      case ShopPlatform.other:
+        return const Color(0xFF4A8A9A);
+    }
+  }
+
+  /// Background color อ่อนๆ สำหรับ badge
+  Color get bgColor {
+    switch (this) {
+      case ShopPlatform.shopee:
+        return const Color(0xFFFFEDEA);
+      case ShopPlatform.lazada:
+        return const Color(0xFFE8E9F8);
+      case ShopPlatform.tiktok:
+        return const Color(0xFFE8E8E8);
+      case ShopPlatform.amazon:
+        return const Color(0xFFFFF3D6);
+      case ShopPlatform.other:
+        return const Color(0xFFE8F4F4);
+    }
+  }
+}
+
 // ─── Product Data Model ─────────────────────────────────────────────────────
 
 class Product {
@@ -18,6 +91,8 @@ class Product {
   final bool isOfficial;
   final String storeName;
   final List<String> features;
+  // Platform ที่สินค้าวางขาย เช่น Shopee, Lazada
+  final ShopPlatform platform;
 
   const Product({
     required this.name,
@@ -30,6 +105,7 @@ class Product {
     this.isOfficial = false,
     this.storeName = 'ร้านค้าทั่วไป',
     this.features = const [],
+    this.platform = ShopPlatform.other,
   });
 }
 
@@ -51,6 +127,7 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 4.9,
       isOfficial: false,
       storeName: 'dongbao',
+      platform: ShopPlatform.shopee,
       features: [
         'หูฟังไร้สาย TWS X55 สำหรับการฟังเพลงระหว่างนอนหลับ ด้วยการออกแบบที่สวมใส่สบาย ไม่ก่อให้เกิดการระคายเคือง เหมาะสำหรับการฟังเพลงหรือเสียงผ่อนคลายขณะนอนหลับ 🎶 เพิ่มความสะดวกสบายในการใช้งานด้วยฟังก์ชันชาร์จเร็ว ⚡ ทนทานต่อน้ำด้วยระดับ IPX5 ทำให้สามารถใช้งานได้ในสภาพอากาศที่หลากหลาย 💧 ตัวเลือกสี: สีกากี, สีชมพู, สีม่วง, สีฟ้า, สีขาว และสีดำ 🎨 เหมาะสำหรับการใช้งานทั่วไปและการออกกำลังกาย 🏋️‍♂️',
       ],
@@ -67,6 +144,7 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 5.0,
       isOfficial: true,
       storeName: 'popmartofficial.th',
+      platform: ShopPlatform.shopee,
       features: [
         'Product Name: DIMOO WORLD x DISNEY Series-Phone Case',
         'Main Material: Silicone/PVC/Aluminum Sheet',
@@ -86,6 +164,7 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 5.0,
       isOfficial: true,
       storeName: 'Ugreen Thailand',
+      platform: ShopPlatform.shopee,
       features: [
         '1.ชาร์จเร็ว 100W : รองรับการชาร์จเร็วสูงสุด 100W สามารถชาร์จ MacBook Pro ได้ถึง 55% ภายใน 35 นาที',
         '2.ดีไซน์แข็งแรงและทนทาน : สายเคเบิลถูกทดสอบการงอมากกว่า 10,000 ครั้ง พร้อมการเชื่อมด้วยเลเซอร์ เพื่อเพิ่มความทนทานต่อการใช้งานระยะยาว',
@@ -108,6 +187,7 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 0,
       isOfficial: false,
       storeName: 'BaNANA Online SHOP',
+      platform: ShopPlatform.shopee,
       features: [
         '• Wireless technology : 2.4GHz Wireless • Sensor technology : HERO 2 • Sensor Resolution : Up to 44,000 DPI • Number of buttons : 4-8 buttons • Scroll Whell : >88 G 2Tested on Logitech G640 Gaming Mouse Pad • Tilt scroll function : N/A • Battery Life : (constant motion) 5Battery life varies with use conditions Default lighting : 60 h , Lighting off : 95 h • Battery Type : N/A • Wireless Operating Distance : 2.4GHz Wireless • Interface : PC with Windows 10 or later and USB 2.0 port (Optional) Internet access for Logitech G HUB Software • Dimensions W x D x H : 125 x 63.5 x 40 mm. • Color : Black / White • Warranty : 2-Year Limited Hardware Warranty • Option : Technical Specifications Onboard memory 1Advanced features require Logitech G HUB Software available for download at logitechg.com/ghub • Macro Keys : N/A • Click life span : N/A',
       ],
@@ -124,6 +204,41 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 4.8,
       isOfficial: true,
       storeName: 'HOCO',
+      platform: ShopPlatform.shopee,
+      features: [
+        '- ชาร์จเร็วไร้สายสูงสุด 15W รองรับมาตรฐาน Qi2 Wireless Protocol ชาร์จไวทันใจ - ระบบจ่ายไฟอัจฉริยะ ปรับกำลังไฟอัตโนมัติตามอุปกรณ์ - แม่เหล็กดูดแน่น จัดตำแหน่งชาร์จง่ายไม่เลื่อนหลุด - ดีไซน์บางเฉียบ น้ำหนักเบา แค่ 55 กรัม พกพาสะดวก - วัสดุอลูมิเนียมอัลลอย แข็งแรง ทนทาน ระบายความร้อนได้ดี - สาย Type-C ยาว 1.2 เมตร ใช้งานยืดหยุ่น - ดีไซน์สวยหรู เข้ากับ iPhone และสมาร์ทโฟนที่รองรับการชาร์จไร้สาย',
+      ],
+    ),
+    Product(
+      name: 'คีย์บอร์ด Keychron K1X QMK ',
+      description: 'Wireless Mechanical Keyboard ขนาด 80% - TH / EN',
+      price: 3060,
+      imageEmoji: '⌨️',
+      imageUrl:
+          'https://img.lazcdn.com/g/p/36068399309fab79ea97547972d5d35d.jpg_720x720q80.jpg',
+      shopUrl:
+          'https://www.lazada.co.th/products/keychron-k1x-qmk-wireless-mechanical-keyboard-80-th-en-i5711097064.html',
+      rating: 4.8,
+      isOfficial: false,
+      storeName: 'iStudio by SPVi',
+      platform: ShopPlatform.lazada,
+      features: [
+        'สัมผัสกับความพรีเมียมในขนาด TKL 80% ไปกับ คีย์บอร์ด Keychron K1 Max Wireless Mechanical Keyboard (EN/TH) ที่มาในสไตล์เรียบง่าย โคตรมินิมอล กับหน้าตาแบบ Low Profile ปุ่มแบนที่บางกว่าคีย์บอร์ดทั่ว ๆ ไปถึง 31% มากับสวิตช์ Low-Profile Gateron ให้สัมผัสการกดที่สนุกแม้จะบางเฉียบขนาดนี้ โดยจุดเด่นของเขาคือฟังก์ชันการตั้งค่าปุ่มกดผ่าน QMK และ VIA ที่สามารถตั้งค่าปุ่มกดได้อย่างอิสระ อยากให้ปุ่มไหนทำอะไรก็สามารถตั้งได้เลย ทุกปุ่ม! รวมไปถึงเอฟเฟกต์การเล่นของไฟ RGB ด้วย ซึ่งใครที่ชอบพกคีย์บอร์ดไปทำงานนอกบ้านก็บอกเลยว่าต้องหลงรักครับ เพราะเบาเพียง 609 กรัมที่มากับแบตอึดกว่า 1550 mAh ที่รองรับการใช้งานไร้สายได้นานกว่า 166 ชั่วโมง และเพื่อให้ตอบโจทย์การนั่งพิมพ์งานตลอดวัน จึงได้รับการออกแบบมาให้ Ergonomic ด้วยขาตั้งที่ปรับได้ 3 ระดับ ยกความสูงให้พิมพ์ได้สบายที่สุด นอกจากนี้ยังรองรับการใช้งานกับทุกระบบปฎิบัติการทั้ง Window MacOS และ Linux รวมไปถึงใช้งานกับอุปกรณ์สมาร์ทโฟนได้ด้วย เรียกได้ว่านี่คืออีก 1 แมคคานิคอลคีย์บอร์ดไร้สายที่บางที่สุดในโลก ที่คนชอบความกระทัดรัดปุ่มแบนไม่ควรพลาด',
+      ],
+    ),
+    Product(
+      name: 'HOCO CW63 แท่นชาร์จไร้สายยย',
+      description: 'ที่ชาร์จ Wireless 15W สำหรับมือถือ',
+      price: 392,
+      imageEmoji: '🔋',
+      imageUrl:
+          'https://img.lazcdn.com/g/ff/kf/Sd953ae8383d540dbbbd1a9ed99aec5b9q.jpg_960x960q80.jpg_.webp',
+      shopUrl:
+          'https://www.lazada.co.th/products/hoco-cw63-15w-qi2-c-dock-12m-tws-ip16-15-13-pro-max-i5837130194.html',
+      rating: 5,
+      isOfficial: true,
+      storeName: 'hoco by Firemax',
+      platform: ShopPlatform.lazada,
       features: [
         '- ชาร์จเร็วไร้สายสูงสุด 15W รองรับมาตรฐาน Qi2 Wireless Protocol ชาร์จไวทันใจ - ระบบจ่ายไฟอัจฉริยะ ปรับกำลังไฟอัตโนมัติตามอุปกรณ์ - แม่เหล็กดูดแน่น จัดตำแหน่งชาร์จง่ายไม่เลื่อนหลุด - ดีไซน์บางเฉียบ น้ำหนักเบา แค่ 55 กรัม พกพาสะดวก - วัสดุอลูมิเนียมอัลลอย แข็งแรง ทนทาน ระบายความร้อนได้ดี - สาย Type-C ยาว 1.2 เมตร ใช้งานยืดหยุ่น - ดีไซน์สวยหรู เข้ากับ iPhone และสมาร์ทโฟนที่รองรับการชาร์จไร้สาย',
       ],
@@ -140,6 +255,7 @@ final Map<String, List<Product>> categoryProducts = {
       rating: 4.8,
       isOfficial: true,
       storeName: 'MENSPE',
+      platform: ShopPlatform.shopee,
       features: [
         'วัสดุคุณภาพสูง: ผลิตจากผ้าโพลีเอสเตอร์คุณภาพสูงน้ำหนักเบาและระบายอากาศได้ดีทนต่อการสึกหรอและป้องกันรอยขีดข่วนกันน้ำ น้ำหนักเบาและความจุขนาดใหญ่: ไม่เพียง แต่สามารถใส่ของใช้ในชีวิตประจำวันเช่นแล็ปท็อปเสื้อผ้าร่มหนังสือ ฯลฯ ►ความจุขนาดใหญ่: กระเป๋าเป้มีกระเป๋าซิปสามช่องช่องใส่คอมพิวเตอร์และกระเป๋าด้านข้างหนึ่งช่องและสไตล์สีทึบด้านนอกของกระเป๋าแสดงถึงแฟชั่นและบุคลิกภาพ กระเป๋าเป้สำหรับผู้ชายและผู้หญิงนี้เหมาะสำหรับทุกโอกาส: กระเป๋าเป้สำหรับผู้ชายและผู้หญิงนี้เหมาะสำหรับโรงเรียนทำงานท่องเที่ยวเดินป่าปีนเขาและตั้งแคมป์',
       ],
@@ -487,15 +603,21 @@ class _ProductCardState extends State<_ProductCard> {
   Future<void> _toggleFav(BuildContext context, Product p) async {
     final added = await _favService.toggleFavorite(p);
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(added
-            ? 'เพิ่ม "${p.name}" ในรายการโปรดแล้ว'
-            : 'ลบ "${p.name}" ออกจากรายการโปรดแล้ว'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: const Color(0xFF3A7CA5),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            added
+                ? 'เพิ่ม "${p.name}" ในรายการโปรดแล้ว'
+                : 'ลบ "${p.name}" ออกจากรายการโปรดแล้ว',
+          ),
+          duration: const Duration(seconds: 2),
+          backgroundColor: const Color(0xFF3A7CA5),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
     }
   }
 
@@ -511,6 +633,7 @@ class _ProductCardState extends State<_ProductCard> {
           p.name,
           'ร้าน ${p.storeName}',
           if (p.isOfficial) 'ร้านค้าทางการ',
+          'วางขายบน ${p.platform.label}',
           'คะแนนรีวิว ${p.rating} จาก 5',
           'ราคา ${p.price == p.price.toInt().toDouble() ? p.price.toInt() : p.price.toStringAsFixed(2)} บาท',
         ].join(', ');
@@ -522,7 +645,8 @@ class _ProductCardState extends State<_ProductCard> {
           customSemanticsActions: {
             CustomSemanticsAction(
               label: isFav ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด',
-            ): () => _toggleFav(context, p),
+            ): () =>
+                _toggleFav(context, p),
           },
           child: GestureDetector(
             onTapDown: (_) => setState(() => _pressed = true),
@@ -540,10 +664,20 @@ class _ProductCardState extends State<_ProductCard> {
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.65),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.85)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
                   boxShadow: [
-                    BoxShadow(color: const Color(0xFF7FB5B5).withValues(alpha: 0.18), blurRadius: 16, offset: const Offset(0, 6)),
-                    BoxShadow(color: Colors.white.withValues(alpha: 0.7), blurRadius: 1, offset: const Offset(0, -1)),
+                    BoxShadow(
+                      color: const Color(0xFF7FB5B5).withValues(alpha: 0.18),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      blurRadius: 1,
+                      offset: const Offset(0, -1),
+                    ),
                   ],
                 ),
                 child: Column(
@@ -555,23 +689,46 @@ class _ProductCardState extends State<_ProductCard> {
                           width: double.infinity,
                           height: 110,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE8F4F4).withValues(alpha: 0.6),
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                            color: const Color(
+                              0xFFE8F4F4,
+                            ).withValues(alpha: 0.6),
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
                           ),
                           child: _buildImage(p, 48),
                         ),
                         if (p.isOfficial)
                           Positioned(
-                            top: 8, left: 8,
+                            top: 8,
+                            left: 8,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                              decoration: BoxDecoration(color: const Color(0xFF1A73E8), borderRadius: BorderRadius.circular(6)),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1A73E8),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.verified_rounded, color: Colors.white, size: 10),
+                                  Icon(
+                                    Icons.verified_rounded,
+                                    color: Colors.white,
+                                    size: 10,
+                                  ),
                                   SizedBox(width: 3),
-                                  Text('Official', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 0.3)),
+                                  Text(
+                                    'Official',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -584,48 +741,130 @@ class _ProductCardState extends State<_ProductCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(color: Color(0xFF2A5F6F), fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.1)),
+                            Text(
+                              p.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF2A5F6F),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
                             const SizedBox(height: 3),
-                            Row(children: [
-                              Icon(Icons.storefront_rounded, size: 11, color: const Color(0xFF4A8A9A).withValues(alpha: 0.7)),
-                              const SizedBox(width: 3),
-                              Expanded(child: Text(p.storeName, maxLines: 1, overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: const Color(0xFF4A8A9A).withValues(alpha: 0.75), fontSize: 10))),
-                            ]),
-                            const Spacer(),
-                            Row(children: [
-                              const Icon(Icons.star_rounded, color: Color(0xFFF5A623), size: 13),
-                              const SizedBox(width: 3),
-                              Text(p.rating.toString(), style: const TextStyle(color: Color(0xFF4A8A9A), fontSize: 11, fontWeight: FontWeight.w600)),
-                            ]),
-                            const SizedBox(height: 6),
-                            Row(children: [
-                              Expanded(child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(color: const Color(0xFF3A7CA5).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-                                child: Text(_formatPrice(p.price), style: const TextStyle(color: Color(0xFF3A7CA5), fontSize: 14, fontWeight: FontWeight.w800)),
-                              )),
-                              const SizedBox(width: 6),
-                              ExcludeSemantics(
-                                child: GestureDetector(
-                                  onTap: () => _toggleFav(context, p),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    width: 32, height: 32,
-                                    decoration: BoxDecoration(
-                                      color: isFav ? const Color(0xFFE05C7A).withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.9),
-                                      shape: BoxShape.circle,
-                                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6, offset: const Offset(0, 2))],
-                                    ),
-                                    child: Icon(
-                                      isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                      color: const Color(0xFFE05C7A), size: 17,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.storefront_rounded,
+                                  size: 11,
+                                  color: const Color(
+                                    0xFF4A8A9A,
+                                  ).withValues(alpha: 0.7),
+                                ),
+                                const SizedBox(width: 3),
+                                Expanded(
+                                  child: Text(
+                                    p.storeName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: const Color(
+                                        0xFF4A8A9A,
+                                      ).withValues(alpha: 0.75),
+                                      fontSize: 10,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            _PlatformBadge(platform: p.platform, compact: true),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Color(0xFFF5A623),
+                                  size: 13,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  p.rating.toString(),
+                                  style: const TextStyle(
+                                    color: Color(0xFF4A8A9A),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFF3A7CA5,
+                                      ).withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      _formatPrice(p.price),
+                                      style: const TextStyle(
+                                        color: Color(0xFF3A7CA5),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                ExcludeSemantics(
+                                  child: GestureDetector(
+                                    onTap: () => _toggleFav(context, p),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        color: isFav
+                                            ? const Color(
+                                                0xFFE05C7A,
+                                              ).withValues(alpha: 0.15)
+                                            : Colors.white.withValues(
+                                                alpha: 0.9,
+                                              ),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(
+                                              alpha: 0.08,
+                                            ),
+                                            blurRadius: 6,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        isFav
+                                            ? Icons.favorite_rounded
+                                            : Icons.favorite_border_rounded,
+                                        color: const Color(0xFFE05C7A),
+                                        size: 17,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -830,8 +1069,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         size: 22,
                       ),
                     ),
-                  ),  // GestureDetector
-                ),  // ExcludeSemantics
+                  ), // GestureDetector
+                ), // ExcludeSemantics
               );
             },
           ),
@@ -1001,6 +1240,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ],
           ),
           const SizedBox(height: 10),
+
+          // Platform badge
+          _PlatformBadge(platform: product.platform),
+          const SizedBox(height: 12),
 
           // Store name
           Row(
@@ -1180,6 +1423,86 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Text(
               hasLink ? 'สั่งซื้อสินค้า' : 'ไม่มีลิงค์สั่งซื้อ',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Platform Badge Widget ────────────────────────────────────────────────────────
+
+class _PlatformBadge extends StatelessWidget {
+  final ShopPlatform platform;
+
+  /// compact = true สำหรับใน product card (ขนาดเล็ก)
+  final bool compact;
+
+  const _PlatformBadge({required this.platform, this.compact = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = platform.color;
+    final bg = platform.bgColor;
+    final label = platform.label;
+    final semanticLabel = 'วางขายบน $label';
+
+    if (compact) {
+      return Semantics(
+        label: semanticLabel,
+        excludeSemantics: true,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Full size สำหรับ detail page
+    return Semantics(
+      label: semanticLabel,
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'วางขายบน',
+              style: TextStyle(
+                color: color.withValues(alpha: 0.75),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.3,
+              ),
             ),
           ],
         ),
