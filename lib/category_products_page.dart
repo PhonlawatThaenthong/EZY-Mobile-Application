@@ -227,6 +227,24 @@ final Map<String, List<Product>> categoryProducts = {
       ],
     ),
     Product(
+      name: 'ATK|เมาส์เกมมิ่งไร้สายแบบเออร์โกโนมิกส์สำหรับมืออาชีพ',
+      description:
+          'เมาส์เกมมิ่งไร้สายออกแบบตามหลักสรีรศาสตร์ เพื่อความสะดวกสบายในการใช้งานระยะยาว',
+      price: 1676.68,
+      imageEmoji: '',
+      imageUrl:
+          'https://img.lazcdn.com/g/p/e82f748d68a140ec546fe7fc87468138.png_360x360q80.png',
+      shopUrl:
+          'https://www.lazada.co.th/products/pdp-i6028296999-s26068473692.html?c=&channelLpJumpArgs=&clickTrackInfo=query%253Amouse%252Bgaming%253Bnid%253A6028296999%253Bsrc%253ALazadaMainSrp%253Brn%253A03e43957d813060fe12f4ea11010b010%253Bregion%253Ath%253Bsku%253A6028296999_TH%253Bprice%253A1862.98%253Bclient%253Adesktop%253Bsupplier_id%253A100218378775%253Bsession_id%253A%253Bbiz_source%253Ah5_hp%253Bslot%253A0%253Butlog_bucket_id%253A470687%253Basc_category_id%253A7436%253Bitem_id%253A6028296999%253Bsku_id%253A26068473692%253Bshop_id%253A3347322%253BtemplateInfo%253A-1_A3_C%2523155383_D_E_G%2523&freeshipping=1&fs_ab=2&fuse_fs=&lang=th&location=Hong%20Kong&price=1862.98&priceCompare=skuId%3A26068473692%3Bsource%3Alazada-search-voucher%3Bsn%3A03e43957d813060fe12f4ea11010b010%3BoriginPrice%3A186298%3BdisplayPrice%3A186298%3BisGray%3Afalse%3BsinglePromotionId%3A900000896862011%3BsingleToolCode%3AmillionSubsidy%3BvoucherPricePlugin%3A0%3Btimestamp%3A1780387538181&qSellingPoint=p--gaming&ratingscore=4.809210526315789&request_id=03e43957d813060fe12f4ea11010b010&review=252&sale=993&search=1&source=search&spm=a2o4m.searchlist.list.0&stock=1',
+      rating: 4.8,
+      isOfficial: true,
+      storeName: 'ElecHome Concept Store',
+      platform: ShopPlatform.lazada,
+      features: [
+        'เมาส์เกมมิ่งไร้สายออกแบบตามหลักสรีรศาสตร์ เพื่อความสะดวกสบายในการใช้งานระยะยาว ความละเอียดเซ็นเซอร์สูงถึง 8000 DPI ตอบสนองอย่างแม่นยำสำหรับเกมเมอร์มืออาชีพ เชื่อมต่อแบบไร้สายช่วยเพิ่มความคล่องตัวและลดความยุ่งยากจากสายเคเบิล เหมาะสำหรับการเล่นเกมและการทำงานที่ต้องการความแม่นยำและความรวดเร็ว',
+      ],
+    ),
+    Product(
       name: 'HOCO CW63 แท่นชาร์จไร้สายยย',
       description: 'ที่ชาร์จ Wireless 15W สำหรับมือถือ',
       price: 392,
