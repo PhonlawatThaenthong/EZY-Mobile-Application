@@ -333,6 +333,24 @@ final Map<String, List<Product>> categoryProducts = {
         '🔴ทำไมต้องเลือก ORICO 20Gbps M.2 NVMe SSD Enclosures? 💎ความสวยงามของเครื่องจักรการออกแบบที่โปร่งใสให้คุณรู้สึกถึงความสวยงามของเครื่องจักร 💎ไม่ต้องใช้เครื่องมือประกอบง่าย Plug and Play 💎พัดลมระบายความร้อนในตัวแผ่นระบายความร้อนซิลิโคนและแผ่นอลูมิเนียมการกระจายความร้อนทำได้อย่างรวดเร็ว 💎รองรับ M.2 SSD ที่มีขนาด 2230/2242/2260/2280 มม. สูงสุด 4TB 💎ไฟ LED แบบพกพาและทนทานไฟ LED 💎รองรับ UASP, TRIM, รองรับ Windows, Mac OS, Linux, Android',
       ],
     ),
+    Product(
+      name: 'LVYIMAO ขวดน้ำ ความจุ 900ML พร้อมหลอด แบบพกพา',
+      description:
+          'LVYIMAO ขวดน้ำ ความจุ 900ML พร้อมหลอด แบบพกพา ทนอุณหภูมิสูง ทำจากพลาสติก เหมาะสำหรับใช้ในรถยนต์ พร้อมจี้ฟรี',
+      price: 42.98,
+      imageEmoji: '',
+      imageUrl:
+          'https://laz-img-sg.alicdn.com/p/547bf338cc132df3d1aa1543387d8b53.jpg',
+      shopUrl:
+          'https://www.lazada.co.th/products/pdp-i5850449253-s24918040696.html?pvid=e9cf9575-c39b-4626-adc3-b77d65a2328e&search=jfy&scm=1007.17519.492200.0&priceCompare=skuId%3A24918040696%3Bsource%3Atpp-recommend-plugin-32104%3Bsn%3Ae9cf9575-c39b-4626-adc3-b77d65a2328e%3BoriginPrice%3A5298%3BdisplayPrice%3A5298%3BsinglePromotionId%3A900000906613284%3BsingleToolCode%3AflashSale%3BvoucherPricePlugin%3A0%3Btimestamp%3A1780633775792&spm=a2o4m.homepage.just4u.d_5850449253',
+      rating: 4.8,
+      isOfficial: true,
+      storeName: 'LVYIMAO',
+      platform: ShopPlatform.lazada,
+      features: [
+        'รายละเอียด:รายละเอียด:ชื่อ: ถ้วยพลาสติก 900MLสไตล์: ทันสมัยและเรียบง่ายฟังก์ชั่น: ทนต่ออุณหภูมิสูงโครงสร้าง: ชั้นเดียวรูปร่าง: กลมคะแนนการขาย: น้ำดื่มปากคู่ พร้อมหลอด อุปกรณ์เสริม ความจุขนาดใหญ่ 900mlคุณสมบัติ:1. พกพาสะดวก และกันน้ำ2. ปากโค้ง ไม่บาดปากเวลาดื่มน้ำ3.ผนังด้านในมีผิวเรียบเนียน ทำความสะอาดได้ง่าย4. ก้นถ้วยอาร์ค ใส่สบาย และทนทาน5. ฐานหนา ฐานคงที่และกันลื่น วางง่าย ไม่ต้องกังวลภายในกล่องมี1* (1 ถ้วย)ภายในกล่องมี1* (1 ถ้วย)หมายเหตุ:ยาจีน 900ml',
+      ],
+    ),
     // Product(
     //   name: '',
     //   description: '',
